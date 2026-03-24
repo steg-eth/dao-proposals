@@ -1,0 +1,12 @@
+{
+  "targets": [
+    "0xaB528d626EC275E3faD363fF1393A41F581c5897",
+    "<tldMinterMainnet>"
+  ],
+  "values": ["0", "0"],
+  "calldatas": [
+    "<setController(address,bool) encoded>",
+    "<batchAddToAllowlist(string[]) encoded>"
+  ],
+  "description": "TLD Oracle v2: Authorize TLDMinter as ENS Root controller and seed 1,166-entry gTLD allowlist"
+}
