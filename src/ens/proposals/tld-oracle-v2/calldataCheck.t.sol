@@ -42,7 +42,7 @@ contract TLDOracleV2CalldataCheck is Test {
     address constant ROOT         = 0xaB528d626EC275E3faD363fF1393A41F581c5897;
     address constant DNSSEC_IMPL  = 0x0fc3152971714E5ed7723FAFa650F86A4BaF30C5;
     address constant ENS_REGISTRY = 0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e;
-    address constant DAO_TIMELOCK = 0xfe89cc7abb2c4183683ab71653c4cdc9b02d44b7;
+    address constant DAO_TIMELOCK = 0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7;
     address constant SC_MULTISIG  = 0xaA5cD05f6B62C3af58AE9c4F3F7A2aCC2Cdc2Cc7;
     address constant SC_CONTRACT  = 0xB8fA0cE3f91F41C5292D07475b445c35ddF63eE0;
 

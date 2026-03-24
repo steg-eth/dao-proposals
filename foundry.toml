@@ -4,5 +4,10 @@ out = "out"
 libs = ["lib"]
 fs_permissions = [{ access = "read", path = "src" }]
 
+remappings = [
+    "@ensdomains/buffer/=lib/buffer/",
+    "forge-std/=lib/forge-std/src/",
+]
+
 [rpc_endpoints]
 mainnet = "${MAINNET_RPC_URL}"
