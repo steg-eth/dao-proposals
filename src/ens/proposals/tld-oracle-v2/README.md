@@ -21,3 +21,5 @@ forge test --match-path "src/ens/proposals/tld-oracle-v2/*" -vv
 - Contract repo: https://github.com/eurekaetcetera/dnssec-solutions/tree/master/TLD-oracle
 - Sepolia deployment: `0x48729B7e0bA736123a57c4B6A492BDAbedAF980F`
 - Mainnet deployment: TBD
+
+> **Note:** `contracts/` contains a snapshot of TLDMinter v2.0.0 sources pinned at the time of this proposal. Canonical source: [eurekaetcetera/dnssec-solutions](https://github.com/eurekaetcetera/dnssec-solutions/tree/master/TLD-oracle).
