@@ -43,24 +43,6 @@ Both `pause()` and `unpause()` are gated by `onlyVetoAuthority` — accessible b
 
 ---
 
-## The Merkle root alternative
-
-There is an alternative path worth noting for future reference.
-
-Instead of writing 1,166 entries to storage, TLDMinter could store a single `bytes32` Merkle root at deploy time — a cryptographic commitment to the full 1,166-TLD set. When an operator submits a claim, they provide a Merkle proof that their TLD is in the approved set. TLDMinter verifies the proof on-chain in constant time and gas.
-
-This would collapse the proposal to **2 calls**:
-1. CREATE2 factory → deploy TLDMinter (with Merkle root committed in constructor)
-2. Root → setController(tldMinter, true)
-
-**The tradeoff:**
-
-TLD operators submitting claims must provide a Merkle proof alongside their DNSSEC proof. This is a toolable, one-time step — but it is a UX change from the storage-based design, where the contract does the allowlist lookup internally. Future DAO additions to the allowlist would require a new Merkle root and a governance proposal to update it (vs. a simpler `addToAllowlist()` call under the current design).
-
-Since the storage-based approach now fits in a single proposal, the Merkle root alternative is not necessary for this deployment. It remains a viable optimization for future iterations if the allowlist grows significantly.
-
----
-
 ## The question for delegates
 
 The single-proposal structure is technically complete, fully tested, and ready to submit. All 1,166 TLDs are seeded in one governance cycle (~9 days), with no sequencing dependencies or follow-up proposals required.
