@@ -6,7 +6,7 @@ This proposal asks ENS DAO to deploy a smart contract called TLDMinter and autho
 
 The mechanism: a TLD operator publishes a DNSSEC-signed TXT record at `_ens.nic.{tld}` pointing to their Ethereum address. TLDMinter reads that cryptographic proof on-chain via the existing DNSSECImpl oracle, verifies it, and if the TLD is on the DAO-approved allowlist, opens a 7-day claim window. The DAO or Security Council can veto during that window. If no veto, the TLD is assigned.
 
-The initial allowlist covers 1,166 post-2012 ICANN gTLDs — the full set of generic TLDs delegated since the 2012 expansion round. Pre-2012 TLDs and `.eth` are explicitly excluded. `.eth` is permanently locked at the Root contract level and cannot be affected by TLDMinter under any circumstance.
+The initial allowlist covers 1,166 post-2012 ICANN gTLDs — the full set of generic TLDs delegated since the 2012 expansion round. Pre-2012 TLDs and `.eth` are explicitly excluded. `.eth` is permanently locked at the Root contract level — `Root.locked["eth"] = true` — meaning even if `.eth` were somehow added to the allowlist, any attempt by TLDMinter to call `setSubnodeOwner` for it would revert at the Root. The protection is enforced by the Root contract, not by TLDMinter itself.
 
 ---
 
@@ -33,6 +33,22 @@ The solution is two sequential proposals:
 Contract is live and operational for 900 TLDs immediately after Proposal A. Proposal B completes the set.
 
 Total governance time: ~18 days (two 7-day voting periods + two 2-day timelocks).
+
+---
+
+## Rate limiting
+
+TLDMinter enforces a rate limit on claim execution: a maximum of 10 TLD claims per 7-day rolling window. This is set at deploy time via constructor arguments and is enforced in .
+
+The DAO can adjust these parameters post-deployment via , which is . The rate limit is a safety valve — it bounds the blast radius if a bad actor somehow obtained a valid DNSSEC proof for a non-intended TLD before the DAO could veto.
+
+---
+
+## Rate limiting
+
+TLDMinter enforces a rate limit on claim execution: a maximum of 10 TLD claims per 7-day rolling window. This is set at deploy time via constructor arguments and is enforced in `submitClaim()`.
+
+The DAO can adjust these parameters post-deployment via `setRateLimit()`, which is `onlyDAO`. The rate limit is a safety valve — it bounds the blast radius if a bad actor somehow obtained a valid DNSSEC proof for a non-intended TLD before the DAO could veto.
 
 ---
 
@@ -70,3 +86,15 @@ The two-proposal structure is technically complete, fully tested, and ready to s
 The Merkle root alternative is architecturally cleaner and saves ~9 days of governance overhead, but requires additional implementation and audit time before submission.
 
 This rationale is presented to give delegates a clear view of the tradeoff — not to advocate for one path over the other. Both are sound. The DAO's preference on governance efficiency vs. implementation readiness should drive the decision.
+
+---
+
+## Emergency pause
+
+Both `pause()` and `unpause()` are gated by `onlyVetoAuthority` — accessible by the DAO Timelock or the Security Council Multisig while the SC is active. After the Security Council's mandate expires (July 24, 2026), only the DAO Timelock can pause or unpause TLDMinter. This is intentional: emergency response transitions from the SC to full DAO governance as the protocol matures.
+
+---
+
+## Emergency pause
+
+Both  and  are gated by  — accessible by the DAO Timelock or the Security Council Multisig while the SC is active. After the Security Council's mandate expires (July 24, 2026), only the DAO Timelock can pause or unpause TLDMinter. This is intentional: emergency response transitions from the SC to full DAO governance as the protocol matures.
