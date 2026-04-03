@@ -1,4 +1,4 @@
-# TLD Oracle v2 Portal Walkthrough
+# TLD Oracle Portal Walkthrough
 
 Live demo: [dnssec.eketc.co/tld-oracle](https://dnssec.eketc.co/tld-oracle)
 Sepolia: [`submitClaim`](https://sepolia.etherscan.io/tx/0xe76d7ded41fd286cbfded251bebcf2ca8c5db1e18e5baccd15d701a82323e785) | [`execute`](https://sepolia.etherscan.io/tx/0x99998721d5e108f11c8e695e0543e5c2473f09d2fe6a04005dd51e4d329e9ec9) | [Contract](https://sepolia.etherscan.io/address/0x48729B7e0bA736123a57c4B6A492BDAbedAF980F)

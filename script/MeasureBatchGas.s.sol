@@ -39,7 +39,7 @@ contract MeasureBatchGas is Script {
         address minter = vm.computeCreate2Address(SALT, keccak256(initCode), FACTORY);
 
         // Load full allowlist
-        string memory json = vm.readFile("src/ens/proposals/tld-oracle-v2/allowlist.json");
+        string memory json = vm.readFile("src/ens/proposals/tld-oracle/allowlist.json");
         bytes memory raw = json.parseRaw(".tlds");
         string[] memory allTlds = abi.decode(raw, (string[]));
 

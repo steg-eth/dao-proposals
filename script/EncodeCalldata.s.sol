@@ -28,10 +28,10 @@ contract EncodeCalldata is Script {
 
         // Load batches and encode Calls 2-5
         string[4] memory batchFiles = [
-            "src/ens/proposals/tld-oracle-v2/allowlist-batch-1.json",
-            "src/ens/proposals/tld-oracle-v2/allowlist-batch-2.json",
-            "src/ens/proposals/tld-oracle-v2/allowlist-batch-3.json",
-            "src/ens/proposals/tld-oracle-v2/allowlist-batch-4.json"
+            "src/ens/proposals/tld-oracle/allowlist-batch-1.json",
+            "src/ens/proposals/tld-oracle/allowlist-batch-2.json",
+            "src/ens/proposals/tld-oracle/allowlist-batch-3.json",
+            "src/ens/proposals/tld-oracle/allowlist-batch-4.json"
         ];
 
         console.log("=== ENCODED CALLDATA (single proposal, 5 calls) ===");

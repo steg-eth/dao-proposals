@@ -46,10 +46,10 @@ contract MeasureGas is Script {
 
         // Load batch files
         string[4] memory batchFiles = [
-            "src/ens/proposals/tld-oracle-v2/allowlist-batch-1.json",
-            "src/ens/proposals/tld-oracle-v2/allowlist-batch-2.json",
-            "src/ens/proposals/tld-oracle-v2/allowlist-batch-3.json",
-            "src/ens/proposals/tld-oracle-v2/allowlist-batch-4.json"
+            "src/ens/proposals/tld-oracle/allowlist-batch-1.json",
+            "src/ens/proposals/tld-oracle/allowlist-batch-2.json",
+            "src/ens/proposals/tld-oracle/allowlist-batch-3.json",
+            "src/ens/proposals/tld-oracle/allowlist-batch-4.json"
         ];
 
         // ── Measure proposal gas (5 calls, executed by DAO timelock) ──
