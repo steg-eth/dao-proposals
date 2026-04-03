@@ -7,7 +7,7 @@
 - **Why:** DNS proposes, ENS programmatically executes under DAO-defined law. TLD operators claim their names trustlessly via DNSSEC proofs, with a 7-day minimum delay and veto open until execution.
 - **Receipt:** Sepolia testnet — DNSSEC proof verified via [`submitClaim`](https://sepolia.etherscan.io/tx/0xe76d7ded41fd286cbfded251bebcf2ca8c5db1e18e5baccd15d701a82323e785), TLD minted via [`execute`](https://sepolia.etherscan.io/tx/0x99998721d5e108f11c8e695e0543e5c2473f09d2fe6a04005dd51e4d329e9ec9). Contract: [`0x48729B...980F`](https://sepolia.etherscan.io/address/0x48729B7e0bA736123a57c4B6A492BDAbedAF980F)
 - **Policy:** 7-day minimum delay (veto open until execution), 10 claims per rolling 7-day window, 14-day proof freshness, emergency pause.
-- **Ask:** Signal support for this design going to audit + executable. Estimated audit budget: $30k-$50k.
+- **Ask:** Signal support for this design going to audit + executable. Audit budget: $30k–$50k (includes remediation review), drawn from Meta-Governance's existing [contract audit allocation](https://discuss.ens.domains/t/6-24-1-social-funding-request-ens-meta-governance-working-group-term-6-oct-window/21549) ($100k for Term 6).
 
 ---
 
@@ -170,7 +170,7 @@ forge test --match-path "src/ens/proposals/tld-oracle/*" --fork-url $MAINNET_RPC
 
 2. **Are you comfortable with the veto + rate-limit policy?** 7-day minimum delay (veto open until execution), 10 claims per rolling 7-day window, Security Council veto active until July 2026.
 
-3. **Do you support allocating audit budget?** Estimated $30k-$50k for a security audit before the executable goes on-chain.
+3. **Do you support allocating audit budget?** $30k–$50k (including remediation) from Meta-Governance's existing contract audit allocation before the executable goes on-chain.
 
 ---
 
