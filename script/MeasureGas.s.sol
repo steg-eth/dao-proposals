@@ -27,7 +27,7 @@ contract MeasureGas is Script {
     bytes32 constant SALT = bytes32(0);
 
     function run() public {
-        // Build initCode (no allowlist in constructor)
+        // Pre-deploy TLDMinter (simulates EOA deployment before the vote)
         bytes memory initCode = abi.encodePacked(
             vm.getCode("TLDMinter.sol:TLDMinter"),
             abi.encode(
@@ -37,11 +37,11 @@ contract MeasureGas is Script {
             )
         );
 
-        address expectedAddress = vm.computeCreate2Address(
-            SALT, keccak256(initCode), FACTORY
-        );
-        console.log("Expected TLDMinter address:", expectedAddress);
-        console.log("initCodeHash:", vm.toString(keccak256(initCode)));
+        // Deploy via CREATE2 just to get a concrete address for gas measurement
+        (bool ok,) = FACTORY.call(abi.encodePacked(SALT, initCode));
+        require(ok, "pre-deploy failed");
+        address minter = vm.computeCreate2Address(SALT, keccak256(initCode), FACTORY);
+        console.log("TLDMinter address:", minter);
         console.log("");
 
         // Load batch files
@@ -52,22 +52,15 @@ contract MeasureGas is Script {
             "src/ens/proposals/tld-oracle-v2/allowlist-batch-4.json"
         ];
 
-        // Gas measurements
+        // ── Measure proposal gas (5 calls, executed by DAO timelock) ──
         vm.startPrank(DAO_TIMELOCK);
 
-        // Call 1: CREATE2 deploy
-        bytes memory call1Data = abi.encodePacked(SALT, initCode);
-        uint256 g0 = gasleft();
-        (bool ok1,) = FACTORY.call(call1Data);
-        uint256 deployGas = g0 - gasleft();
-        require(ok1, "deploy failed");
-
-        // Call 2: setController
+        // Call 1: setController
         uint256 g1 = gasleft();
-        IRoot(ROOT).setController(expectedAddress, true);
+        IRoot(ROOT).setController(minter, true);
         uint256 controllerGas = g1 - gasleft();
 
-        // Calls 3-6: batchAddToAllowlist (4 batches)
+        // Calls 2-5: batchAddToAllowlist (4 batches)
         uint256 totalBatchGas = 0;
         for (uint256 i = 0; i < 4; i++) {
             string memory json = vm.readFile(batchFiles[i]);
@@ -75,7 +68,7 @@ contract MeasureGas is Script {
             string[] memory batch = abi.decode(raw, (string[]));
 
             uint256 gN = gasleft();
-            ITLDMinter(expectedAddress).batchAddToAllowlist(batch);
+            ITLDMinter(minter).batchAddToAllowlist(batch);
             uint256 batchGas = gN - gasleft();
             totalBatchGas += batchGas;
 
@@ -84,17 +77,16 @@ contract MeasureGas is Script {
 
         vm.stopPrank();
 
-        uint256 totalGas = deployGas + controllerGas + totalBatchGas;
+        uint256 totalGas = controllerGas + totalBatchGas;
         uint256 gasLimit = block.gaslimit;
         uint256 buffer = 2_000_000;
 
         console.log("");
         console.log("=== GAS BREAKDOWN ===");
-        console.log("Call 1 (CREATE2 deploy):", deployGas);
-        console.log("Call 2 (setController):", controllerGas);
-        console.log("Calls 3-6 (batches 1-4):", totalBatchGas);
+        console.log("Call 1 (setController):", controllerGas);
+        console.log("Calls 2-5 (batches 1-4):", totalBatchGas);
         console.log("");
-        console.log("Proposal total (6 calls):", totalGas);
+        console.log("Proposal total (5 calls):", totalGas);
         console.log("Block gas limit:", gasLimit);
         console.log("");
 

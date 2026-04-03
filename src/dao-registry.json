@@ -1,0 +1,24 @@
+{
+  "daos": {
+    "ens": {
+      "name": "ENS",
+      "governanceType": "governor-timelock",
+      "chain": "mainnet",
+      "basePath": "src/ens",
+      "baseTestContract": "ENS_Governance",
+      "baseTestFile": "src/ens/ENS_Governance.sol",
+      "contracts": {
+        "governor": "0x323A76393544d5ecca80cd6ef2A560C6a395b7E3",
+        "timelock": "0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7",
+        "token": "0xC18360217D8F7Ab5e7c516566761Ea12Ce7F9D72"
+      },
+      "tallySlug": "ens",
+      "proposalPrefix": "tld-oracle",
+      "contractNaming": "Proposal_ENS_{name}_Test",
+      "helpers": [],
+      "interfacesPath": "src/ens/interfaces",
+      "proposalsPath": "src/ens/proposals",
+      "constantsFile": "src/ens/Constants.sol"
+    }
+  }
+}

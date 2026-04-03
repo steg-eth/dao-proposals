@@ -1,0 +1,4 @@
+@ensdomains/buffer/=lib/buffer/
+forge-std/=lib/forge-std/src/
+@ens/=src/ens/
+@contracts/=src/
