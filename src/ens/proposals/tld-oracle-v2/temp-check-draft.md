@@ -45,8 +45,9 @@ TLDMinter v2 is a smart contract that lets ICANN TLD operators claim their TLD i
                           │
                           ▼
                 ┌─────────────────────┐
-                │   TIMELOCK WINDOW   │◄─── veto() by DAO or Security Council
-                │      (7 days)       │
+                │  MINIMUM 7-DAY WAIT │◄─── veto() by DAO or Security Council
+                │  (veto open until   │     (can veto any time before execute)
+                │   execute() called) │
                 └─────────────────────┘
                           │
                           ▼ (if not vetoed)
@@ -69,7 +70,7 @@ Only **1,166 post-2012 ICANN New gTLD Program** TLDs are eligible for self-serve
 
 | Parameter | Value | Adjustable? |
 |-----------|-------|-------------|
-| Veto window | 7 days | By DAO (constructor arg) |
+| Minimum delay before execution | 7 days | By DAO (constructor arg) |
 | Rate limit | 10 claims per 7-day window | By DAO (`setRateLimit()`) |
 | Proof freshness | 14 days max age | By DAO (constructor arg) |
 | Emergency pause | `pause()` / `unpause()` | DAO Timelock or Security Council |
@@ -131,7 +132,7 @@ The contract-level gate: 1,166 post-2012 ICANN New gTLD Program TLDs are eligibl
 
 ![Governance and Veto](screenshots/03-governance-veto.png)
 
-The safety mechanism. During the timelock window (15 minutes on testnet, 7 days on mainnet), either the ENS DAO or the Security Council can veto a pending claim. The veto function is shown inline -- it checks `msg.sender` against the stored DAO timelock and Security Council multisig addresses. Veto scenarios include fraudulent DNSSEC proofs, disputed TLD ownership, or incorrectly allowlisted TLDs. After the Security Council's mandate expires (July 24, 2026), only the DAO retains veto authority.
+The safety mechanism. Either the ENS DAO or the Security Council can veto any pending claim at any point before `execute()` is called — the 7-day timelock is the minimum delay, but the veto window remains open until execution. The veto function checks `msg.sender` against the stored DAO timelock and Security Council multisig addresses. Veto scenarios include fraudulent DNSSEC proofs, disputed TLD ownership, or incorrectly allowlisted TLDs. After the Security Council's mandate expires (July 24, 2026), only the DAO retains veto authority.
 
 ---
 
@@ -167,7 +168,7 @@ forge test --match-path "src/ens/proposals/tld-oracle-v2/*" --fork-url $MAINNET_
 
 1. **Do you support the single-proposal structure?** TLDMinter pre-deployed via EOA, proposal authorizes it and seeds the full allowlist in one vote.
 
-2. **Are you comfortable with the veto + rate-limit policy?** 7-day veto window, 10 claims per 7-day rolling window, Security Council veto active until July 2026.
+2. **Are you comfortable with the veto + rate-limit policy?** 7-day minimum delay (veto open until execution), 10 claims per rolling 7-day window, Security Council veto active until July 2026.
 
 3. **Do you support allocating audit budget?** Estimated $30k-$50k for a security audit before the executable goes on-chain.
 

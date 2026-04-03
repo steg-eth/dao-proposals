@@ -73,6 +73,7 @@ contract TLDMinter is ITLDMinter {
     error NotVetoAuthority(address caller);
     error ContractPaused();
     error NotDAO(address caller);
+    error InvalidRateLimitMax();
     error NoPendingRequest(bytes32 labelHash);
     error AlreadyVetoed(bytes32 labelHash);
     error SecurityCouncilNotExpired();
@@ -121,6 +122,7 @@ contract TLDMinter is ITLDMinter {
         uint256 _rateLimitPeriod,
         uint256 _proofMaxAge
     ) {
+        if (_rateLimitMax == 0) revert InvalidRateLimitMax();
         oracle = IDNSSEC(_oracle);
         root = IRoot(_root);
         ens = IENS(_ens);
@@ -226,6 +228,7 @@ contract TLDMinter is ITLDMinter {
 
     /// @inheritdoc ITLDMinter
     function setRateLimit(uint256 newMax, uint256 newPeriod) external onlyDAO {
+        if (newMax == 0) revert InvalidRateLimitMax();
         rateLimitMax = newMax;
         rateLimitPeriod = newPeriod;
         claimTimestamps = new uint256[](newMax);
