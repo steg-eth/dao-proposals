@@ -1,4 +1,4 @@
-# TLD Oracle v2
+# TLD Oracle
 
 Authorizes TLDMinter as an ENS Root controller and seeds the initial 1,166-entry gTLD allowlist.
 
@@ -24,7 +24,7 @@ Single proposal, executed through the DAO timelock (5 calls, ~29.1M gas). Ethere
 ## Verify
 
 ```bash
-forge test --match-path "src/ens/proposals/tld-oracle-v2/*" --fork-url $MAINNET_RPC_URL -vv
+forge test --match-path "src/ens/proposals/tld-oracle/*" --fork-url $MAINNET_RPC_URL -vv
 ```
 
 5 tests: governance lifecycle, full claim lifecycle, DAO veto, Security Council veto, premature execution revert.

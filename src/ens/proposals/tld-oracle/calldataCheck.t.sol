@@ -17,7 +17,7 @@ interface IRoot {
 
 /**
  * @title Proposal_ENS_TLD_Oracle_V2_Test
- * @notice Pre-draft calldata review for the TLD Oracle v2 proposal.
+ * @notice Pre-draft calldata review for the TLD Oracle proposal.
  *
  * TLDMinter is pre-deployed via EOA before the governance vote.
  * The proposal executes 5 calls through the DAO timelock:
@@ -121,10 +121,10 @@ contract Proposal_ENS_TLD_Oracle_V2_Test is ENS_Governance {
     {
         // Load batches
         string[4] memory batchFiles = [
-            "src/ens/proposals/tld-oracle-v2/allowlist-batch-1.json",
-            "src/ens/proposals/tld-oracle-v2/allowlist-batch-2.json",
-            "src/ens/proposals/tld-oracle-v2/allowlist-batch-3.json",
-            "src/ens/proposals/tld-oracle-v2/allowlist-batch-4.json"
+            "src/ens/proposals/tld-oracle/allowlist-batch-1.json",
+            "src/ens/proposals/tld-oracle/allowlist-batch-2.json",
+            "src/ens/proposals/tld-oracle/allowlist-batch-3.json",
+            "src/ens/proposals/tld-oracle/allowlist-batch-4.json"
         ];
 
         uint256 numTransactions = 5;
@@ -151,7 +151,7 @@ contract Proposal_ENS_TLD_Oracle_V2_Test is ENS_Governance {
             signatures[i + 1] = "";
         }
 
-        description = "Pre-draft: TLD Oracle v2 - authorize TLDMinter and seed 1,166 gTLD allowlist";
+        description = "Pre-draft: TLD Oracle - authorize TLDMinter and seed 1,166 gTLD allowlist";
 
         return (targets, values, signatures, calldatas, description);
     }
@@ -185,7 +185,7 @@ contract Proposal_ENS_TLD_Oracle_V2_Test is ENS_Governance {
         assertEq(ITLDMinter(tldMinter).version(), "2.0.0", "Unexpected contract version");
 
         // Allowlist count
-        string memory json = vm.readFile("src/ens/proposals/tld-oracle-v2/allowlist.json");
+        string memory json = vm.readFile("src/ens/proposals/tld-oracle/allowlist.json");
         bytes memory raw = json.parseRaw(".tlds");
         string[] memory tlds = abi.decode(raw, (string[]));
         assertEq(tlds.length, 1166, "Allowlist should contain exactly 1,166 TLDs");

@@ -16,7 +16,7 @@ CI runs automatically on PRs and pushes to main.
 
 | Proposal | Status | Tests | Forum |
 |----------|--------|-------|-------|
-| [tld-oracle-v2](src/ens/proposals/tld-oracle-v2/) | Temp Check | 5 pass | [RFC](https://discuss.ens.domains/t/rfc-a-programmable-fast-path-for-tld-assignment/21859) |
+| [TLD Oracle](src/ens/proposals/tld-oracle/) | Temp Check | 5 pass | [RFC](https://discuss.ens.domains/t/rfc-a-programmable-fast-path-for-tld-assignment/21859) |
 
 ## Structure
 

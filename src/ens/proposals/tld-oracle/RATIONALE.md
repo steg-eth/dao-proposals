@@ -1,4 +1,4 @@
-# TLD Oracle v2 — Proposal Rationale
+# TLD Oracle — Proposal Rationale
 
 ## What this proposal is asking the DAO to do
 

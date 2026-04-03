@@ -97,7 +97,7 @@ Total governance time: ~9 days (7-day voting period + 2-day timelock). All 1,166
 
 ---
 
-## TLD Oracle v2 Portal Walkthrough
+## TLD Oracle Portal Walkthrough
 
 Live demo: [dnssec.eketc.co/tld-oracle](https://dnssec.eketc.co/tld-oracle)
 Sepolia: [`submitClaim`](https://sepolia.etherscan.io/tx/0xe76d7ded41fd286cbfded251bebcf2ca8c5db1e18e5baccd15d701a82323e785) | [`execute`](https://sepolia.etherscan.io/tx/0x99998721d5e108f11c8e695e0543e5c2473f09d2fe6a04005dd51e4d329e9ec9) | [Contract](https://sepolia.etherscan.io/address/0x48729B7e0bA736123a57c4B6A492BDAbedAF980F)
@@ -152,7 +152,7 @@ The proposal has been tested end-to-end against a mainnet fork using the full EN
 git clone https://github.com/steg-eth/dao-proposals.git
 cd dao-proposals
 cp .env.example .env && echo "MAINNET_RPC_URL=https://eth.drpc.org" >> .env
-forge test --match-path "src/ens/proposals/tld-oracle-v2/*" --fork-url $MAINNET_RPC_URL -vv
+forge test --match-path "src/ens/proposals/tld-oracle/*" --fork-url $MAINNET_RPC_URL -vv
 ```
 
 5 tests pass:
@@ -177,10 +177,10 @@ forge test --match-path "src/ens/proposals/tld-oracle-v2/*" --fork-url $MAINNET_
 ## Artifacts
 
 - **RFC:** [Scaling TLD assignment with DNS-verified DAO-governed allocation](https://discuss.ens.domains/t/rfc-a-programmable-fast-path-for-tld-assignment/21859)
-- **Repo:** [steg-eth/dao-proposals](https://github.com/steg-eth/dao-proposals) — `src/ens/proposals/tld-oracle-v2/`
-- **Rationale:** [RATIONALE.md](https://github.com/steg-eth/dao-proposals/blob/main/src/ens/proposals/tld-oracle-v2/RATIONALE.md)
+- **Repo:** [steg-eth/dao-proposals](https://github.com/steg-eth/dao-proposals) — `src/ens/proposals/tld-oracle/`
+- **Rationale:** [RATIONALE.md](https://github.com/steg-eth/dao-proposals/blob/main/src/ens/proposals/tld-oracle/RATIONALE.md)
 - **Demo:** [dnssec.eketc.co/tld-oracle](https://dnssec.eketc.co/tld-oracle)
-- **Gas breakdown:** [gas-table.md](https://github.com/steg-eth/dao-proposals/blob/main/src/ens/proposals/tld-oracle-v2/gas-table.md)
+- **Gas breakdown:** [gas-table.md](https://github.com/steg-eth/dao-proposals/blob/main/src/ens/proposals/tld-oracle/gas-table.md)
 
 ---
 

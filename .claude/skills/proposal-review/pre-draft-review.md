@@ -8,7 +8,7 @@ Use this workflow when a proposal is being **discussed or designed** but has no 
 git checkout -b ens/ep-topic-name
 ```
 
-Use a descriptive name (e.g., `ens/ep-tld-oracle-v2`, `ens/ep-registrar-manager-endowment`).
+Use a descriptive name (e.g., `ens/ep-tld-oracle`, `ens/ep-registrar-manager-endowment`).
 
 ## 2. Create Proposal Directory
 

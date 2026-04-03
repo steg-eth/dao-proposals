@@ -1,4 +1,4 @@
-# TLD Oracle v2 — Gas Breakdown
+# TLD Oracle — Gas Breakdown
 
 Measured against mainnet fork via `MeasureGas.s.sol` (2026-04-03).
 

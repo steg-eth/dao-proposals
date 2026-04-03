@@ -11,7 +11,7 @@
     "total": 29133330
   },
   "proposal": {
-    "description": "TLD Oracle v2: Authorize pre-deployed TLDMinter as Root controller and seed all 1,166 gTLDs",
+    "description": "TLD Oracle: Authorize pre-deployed TLDMinter as Root controller and seed all 1,166 gTLDs",
     "targets": [
       "0xaB528d626EC275E3faD363fF1393A41F581c5897",
       "0xf096afBc6ebD704Dbd215999045A3FE29C064b6b",
