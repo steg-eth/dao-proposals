@@ -4,7 +4,7 @@
 
 This proposal asks ENS DAO to authorize a pre-deployed smart contract called TLDMinter as a controller of the ENS Root. Once authorized, TLDMinter allows ICANN-registered top-level domain operators to claim their TLD as an ENS name — trustlessly, on-chain, without requiring manual intervention from ENS Labs.
 
-The mechanism: a TLD operator publishes a DNSSEC-signed TXT record at `_ens.nic.{tld}` pointing to their Ethereum address. TLDMinter reads that cryptographic proof on-chain via the existing DNSSECImpl oracle, verifies it, and if the TLD is on the DAO-approved allowlist, opens a 7-day claim window. The DAO or Security Council can veto during that window. If no veto, the TLD is assigned.
+The mechanism: a TLD operator publishes a DNSSEC-signed TXT record at `_ens.nic.{tld}` pointing to their Ethereum address. TLDMinter reads that cryptographic proof on-chain via the existing DNSSECImpl oracle, verifies it, and if the TLD is on the DAO-approved allowlist, opens a claim with a 7-day minimum delay. The DAO or Security Council can veto at any point before execution. If no veto, the TLD is assigned.
 
 The initial allowlist covers 1,166 post-2012 ICANN gTLDs — the full set of generic TLDs delegated since the 2012 expansion round. Pre-2012 TLDs and `.eth` are explicitly excluded. `.eth` is permanently locked at the Root contract level — `Root.locked["eth"] = true` — meaning even if `.eth` were somehow added to the allowlist, any attempt by TLDMinter to call `setSubnodeOwner` for it would revert at the Root. The protection is enforced by the Root contract, not by TLDMinter itself.
 
@@ -76,7 +76,7 @@ sequenceDiagram
     Note over Minter: Check allowlist, proof age,<br/>parse owner from TXT, store MintRequest<br/>unlockTime = now + 7 days
 
     rect rgb(240, 248, 255)
-        Note over DAO,SC: 7-day veto window
+        Note over DAO,SC: 7-day minimum delay (veto open until execution)
         alt DAO vetoes
             DAO->>Minter: veto(labelHash, reason)
             Note over Minter: req.vetoed = true

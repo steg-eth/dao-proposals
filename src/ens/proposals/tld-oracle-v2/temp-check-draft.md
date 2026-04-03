@@ -4,9 +4,9 @@
 ## TL;DR
 
 - **What:** Authorize TLDMinter v2 as an ENS Root controller and seed 1,166 post-2012 ICANN gTLDs into its allowlist — in a single executable proposal.
-- **Why:** DNS proposes, ENS programmatically executes under DAO-defined law. TLD operators claim their names trustlessly via DNSSEC proofs, with a 7-day veto window for the DAO and Security Council.
+- **Why:** DNS proposes, ENS programmatically executes under DAO-defined law. TLD operators claim their names trustlessly via DNSSEC proofs, with a 7-day minimum delay and veto open until execution.
 - **Receipt:** Sepolia testnet — DNSSEC proof verified via [`submitClaim`](https://sepolia.etherscan.io/tx/0xe76d7ded41fd286cbfded251bebcf2ca8c5db1e18e5baccd15d701a82323e785), TLD minted via [`execute`](https://sepolia.etherscan.io/tx/0x99998721d5e108f11c8e695e0543e5c2473f09d2fe6a04005dd51e4d329e9ec9). Contract: [`0x48729B...980F`](https://sepolia.etherscan.io/address/0x48729B7e0bA736123a57c4B6A492BDAbedAF980F)
-- **Policy:** 7-day veto window, 10 claims per 7-day rolling window, 14-day proof freshness, emergency pause.
+- **Policy:** 7-day minimum delay (veto open until execution), 10 claims per rolling 7-day window, 14-day proof freshness, emergency pause.
 - **Ask:** Signal support for this design going to audit + executable. Estimated audit budget: $30k-$50k.
 
 ---
@@ -31,7 +31,7 @@ TLDMinter v2 is a smart contract that lets ICANN TLD operators claim their TLD i
 |-------|----------|----------------|
 | **DNS Verification** | `DNSSECImpl` | Verifies DNSSEC cryptographic chains, returns authenticated DNS records |
 | **Policy Enforcement** | `TLDMinter` | Parses `_ens.nic.{tld}` TXT records, enforces DAO policy (timelock, rate limits, veto), calls Root |
-| **Veto Authority** | DAO Timelock / Security Council | Can veto pending claims during 7-day window |
+| **Veto Authority** | DAO Timelock / Security Council | Can veto pending claims any time before execution |
 | **Root Authority** | `ENS Root` | Gatekeeper — only authorized controllers can write TLDs to the Registry |
 | **State Storage** | `ENS Registry` | Canonical ownership state |
 
