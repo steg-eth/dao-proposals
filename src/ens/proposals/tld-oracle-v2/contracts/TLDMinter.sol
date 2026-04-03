@@ -49,10 +49,10 @@ contract TLDMinter is ITLDMinter {
 
     mapping(bytes32 => MintRequest) public requests;
 
-    uint256 public mintsThisPeriod;
-    uint256 public periodStart;
     uint256 public rateLimitMax;
     uint256 public rateLimitPeriod;
+    uint256[] public claimTimestamps;
+    uint256 public claimCursor;
 
     bool public paused;
     bool private _securityCouncilVetoRevoked;
@@ -131,7 +131,7 @@ contract TLDMinter is ITLDMinter {
         rateLimitMax = _rateLimitMax;
         rateLimitPeriod = _rateLimitPeriod;
         proofMaxAge = _proofMaxAge;
-        periodStart = block.timestamp;
+        claimTimestamps = new uint256[](_rateLimitMax);
     }
 
     // ─────────────────────────────────────────────────────────────────
@@ -228,6 +228,8 @@ contract TLDMinter is ITLDMinter {
     function setRateLimit(uint256 newMax, uint256 newPeriod) external onlyDAO {
         rateLimitMax = newMax;
         rateLimitPeriod = newPeriod;
+        claimTimestamps = new uint256[](newMax);
+        claimCursor = 0;
         emit RateLimitUpdated(newMax, newPeriod);
     }
 
@@ -305,18 +307,20 @@ contract TLDMinter is ITLDMinter {
     // ─────────────────────────────────────────────────────────────────
 
     /**
-     * @dev Checks and enforces rate limiting for TLD mints.
+     * @dev Rolling-window rate limit. Maintains a circular buffer of the last
+     *      `rateLimitMax` claim timestamps. A new claim is allowed only if the
+     *      oldest entry in the buffer is outside the current window, guaranteeing
+     *      that no more than `rateLimitMax` claims can occur in any
+     *      `rateLimitPeriod`-length span.
      */
     function _checkRateLimit() internal {
-        if (block.timestamp >= periodStart + rateLimitPeriod) {
-            periodStart = block.timestamp;
-            mintsThisPeriod = 0;
+        uint256 oldest = claimTimestamps[claimCursor];
+        if (oldest != 0 && block.timestamp - oldest < rateLimitPeriod) {
+            emit RateLimitHit(rateLimitMax, rateLimitMax, oldest + rateLimitPeriod);
+            revert RateLimitExceeded(rateLimitMax, rateLimitMax);
         }
-        if (mintsThisPeriod >= rateLimitMax) {
-            emit RateLimitHit(mintsThisPeriod, rateLimitMax, periodStart + rateLimitPeriod);
-            revert RateLimitExceeded(mintsThisPeriod, rateLimitMax);
-        }
-        mintsThisPeriod++;
+        claimTimestamps[claimCursor] = block.timestamp;
+        claimCursor = (claimCursor + 1) % rateLimitMax;
     }
 
     /**
