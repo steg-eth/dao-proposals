@@ -4,15 +4,17 @@
 
 This proposal asks ENS DAO to authorize a pre-deployed smart contract called TLDMinter as a controller of the ENS Root. Once authorized, TLDMinter allows ICANN-registered top-level domain operators to claim their TLD as an ENS name — trustlessly, on-chain, without requiring manual intervention from ENS Labs.
 
-The mechanism: a TLD operator publishes a DNSSEC-signed TXT record at `_ens.nic.{tld}` pointing to their Ethereum address. TLDMinter reads that cryptographic proof on-chain via the existing DNSSECImpl oracle, verifies it, and if the TLD is on the DAO-approved allowlist, opens a claim with a 7-day minimum delay. The DAO or Security Council can veto at any point before execution. If no veto, the TLD is assigned.
+The mechanism: a TLD operator publishes a DNSSEC-signed TXT record at `_ens.nic.{tld}` containing their Ethereum address, verified against the IANA root trust chain via DNSSEC. Anyone can submit the proof on-chain (acting as a gas relayer), but the TLD is always minted to the address in the DNS record — the submitter cannot redirect ownership. TLDMinter verifies the proof via the existing `DNSSECImpl` oracle, and if the TLD is on the DAO-approved allowlist, opens a claim with a 7-day minimum delay. The DAO or Security Council can veto at any point before execution. If no veto, the TLD is assigned.
 
 The initial allowlist covers 1,166 post-2012 ICANN gTLDs — the full set of generic TLDs delegated since the 2012 expansion round. Pre-2012 TLDs and `.eth` are explicitly excluded. `.eth` is permanently locked at the Root contract level — `Root.locked["eth"] = true` — meaning even if `.eth` were somehow added to the allowlist, any attempt by TLDMinter to call `setSubnodeOwner` for it would revert at the Root. The protection is enforced by the Root contract, not by TLDMinter itself.
+
+The DAO can expand the allowlist at any time via `addToAllowlist()` or `batchAddToAllowlist()` — both are `onlyDAO`, requiring a governance proposal through the timelock. Future gTLD rounds can be onboarded without redeploying the contract; the DAO simply votes to expand the list.
 
 ---
 
 ## Deployment pattern
 
-TLDMinter is deployed via EOA before the governance vote, following the standard ENS proposal pattern established by prior executables (e.g., Blockful's RegistrarManager, audited by Cyfrin and pre-deployed at `0x62627681D92e36b9aeE1D9A6BF181373ccd42552`). The contract source is audited, deployed, and verified on Etherscan — delegates can inspect the exact bytecode, constructor arguments, and storage layout during the entire voting period before granting it any authority.
+TLDMinter is deployed via EOA before the governance vote, following the standard ENS proposal pattern established by prior executables. The contract source is audited, deployed, and verified on Etherscan — delegates can inspect the exact bytecode, constructor arguments, and storage layout during the entire voting period before granting it any authority.
 
 This is preferable to deploying inside the executable proposal (e.g., via CREATE2) for two reasons:
 
@@ -39,9 +41,11 @@ Total governance time: ~9 days (one 7-day voting period + one 2-day timelock).
 
 ## Rate limiting
 
-TLDMinter enforces a rate limit on claim execution: a maximum of 10 TLD claims per 7-day rolling window. This is set at deploy time via constructor arguments and is enforced in `submitClaim()`.
+TLDMinter enforces a rate limit on claim submission: a maximum of 10 TLD claims per rolling 7-day window, implemented as a circular buffer of timestamps. This guarantees that no more than 10 claims can occur in any 7-day span — there are no boundary-burst edge cases. The rate limit is enforced in `submitClaim()` and reverts with `InvalidRateLimitMax` if the DAO ever sets the max to zero.
 
-The DAO can adjust these parameters post-deployment via `setRateLimit()`, which is `onlyDAO`. The rate limit is a safety valve — it bounds the blast radius if a bad actor somehow obtained a valid DNSSEC proof for a non-intended TLD before the DAO could veto.
+The DAO can adjust the rate limit post-deployment via `setRateLimit()`, which is `onlyDAO`. The timelock duration (7 days) and proof freshness window (14 days) are immutable — set at deploy time and cannot be changed without redeploying.
+
+The rate limit is a safety valve — it bounds the blast radius if a bad actor somehow obtained a valid DNSSEC proof for a non-intended TLD before the DAO could veto.
 
 ---
 
@@ -117,10 +121,12 @@ modifier onlyVetoAuthority() {
 
 After July 24, 2026, `securityCouncil.expiration()` returns a timestamp in the past, permanently disabling the SC branch. Only `isDAO` remains valid.
 
-This logic is covered by `ClaimSimulation.t.sol` in the repository, which tests all four paths: happy path, DAO veto, SC veto, and premature execution.
+This logic is covered by `ClaimSimulation.t.sol` in the repository, which tests all five paths: happy path (full claim lifecycle), DAO veto, SC veto, premature execution, and the full governance lifecycle (propose, vote, queue, execute).
 
 ---
 
 ## The question for delegates
 
 The single-proposal structure is technically complete, fully tested, and ready to submit. All 1,166 TLDs are seeded in one governance cycle (~9 days), with no sequencing dependencies or follow-up proposals required. TLDMinter is pre-deployed and verifiable before the vote — the proposal only grants it authority.
+
+Audit budget ($30k–$50k including remediation) is drawn from Meta-Governance's existing [contract audit allocation](https://discuss.ens.domains/t/6-24-1-social-funding-request-ens-meta-governance-working-group-term-6-oct-window/21549) ($100k for Term 6).
